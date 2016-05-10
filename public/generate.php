@@ -3,12 +3,22 @@
 $width = 3;
 $height = 3;
 
+function l($val){
 
-function chooseMove($board, $player='x'){
+    echo "<pre font-color='red'>";
+    echo "-------\n";
+    print_r($val);
+    echo "</pre>";
+}
 
-    $move = findFirstNull($board);
+function k($val){
+    l($val);
+    exit;
+}
 
-    return $move;
+function chooseMove($board, $player='O'){
+
+    return findFirstNull($board);
 }
 
 function getAllPossibleRows(){
@@ -53,7 +63,7 @@ function getPath($board){
         $sections[] = $section;
     }
 
-    return implode($sections, '/') . '.html';
+    return 'boards/' . implode($sections, '/');
 }
 
 function findAllNulls($board){
@@ -61,20 +71,20 @@ function findAllNulls($board){
     foreach($board as $row => $cols){
         foreach($cols as $col => $val){
             if(is_null($val)){
-                return $nulls[] = [$row, $col];
+                $nulls[] = [$row, $col];
             }
         }
     }
     return $nulls;
 }
 
-function render($board){
+function render($board, $moves){
 
     ob_start();
     include 'template.php';
     $html = ob_get_clean();
 
-    $path = 'boards/' . getPath($board);
+    $path = getPath($board);
 
     $chunks = explode('/', $path);
     array_pop($chunks);
@@ -98,8 +108,22 @@ function findFirstNull($board){
     }
 }
 
+function getMoves($board){
+    $moves = [];
+    foreach(findAllNulls($board) as $null){
+        $new_board = $board;
+        $new_board[$null[0]][$null[1]] = 'X';
+        if($x_move = chooseMove($new_board, 'O')){
+            $new_board[$x_move[0]][$null[1]] = 'O';
+        }
+        $moves[$null[0]][$null[1]] = getPath($new_board);
+    }
+    return $moves;
+}
+
 foreach(getAllPossibleBoards() as $i => $board){
-    render($board);
+    $moves = getMoves($board);
+    render($board, $moves);
 }
 
 echo "done";
