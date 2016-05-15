@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>TicTacTml</title>
-    <link rel="stylesheet" type="text/css" href="../../boards.css">
+    <link rel="stylesheet" type="text/css" href="../../../boards.css">
     <base href="../../">
 </head>
 <body>
